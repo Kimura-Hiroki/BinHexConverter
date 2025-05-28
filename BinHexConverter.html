@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2進数→16進数 変換シミュレーター</title>
+  <style>
+    /* リセット & ベース */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      line-height: 1.4;
+    }
+    /* コンテナ */
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #0078d4;
+      text-align: center;
+    }
+    /* カード */
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .label {
+      font-weight: 600;
+      width: 45%;
+      text-align: center;
+    }
+    .light-label {
+      color: #999;
+      line-height: 1.2;
+      text-align: center;
+    }
+    .value {
+      font-size: 1.5rem;
+      font-family: 'Courier New', monospace;
+      background: #e8eef3;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-align: center;
+      width: 50%;
+      letter-spacing: 0.05em;
+    }
+    /* サブ値 (控えめデザイン) */
+    .subvalue {
+      font-size: 1.2rem;
+      font-family: 'Courier New', monospace;
+      background: #f5f7fa;
+      color: #666;
+      padding: 6px 10px;
+      border-radius: 6px;
+      text-align: center;
+      width: 50%;
+      letter-spacing: 0.05em;
+    }
+    /* スライダー */
+    #slider {
+      width: 100%;
+      margin-top: 12px;
+      accent-color: #0078d4;
+    }
+    /* フッター */
+    footer {
+      text-align: center;
+      padding: 12px;
+      background: #ffffff;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>2進数→16進数 変換シミュレーター</h1>
+    <div class="card">
+      <div class="row">
+        <div class="label">10進数</div>
+        <div id="decimal" class="value">0</div>
+      </div>
+      <div class="row">
+        <div class="label">2進数 (8ビット)</div>
+        <div id="binary" class="value">0000 0000</div>
+      </div>
+      <div class="row">
+        <div class="light-label">上位・下位4ビット<br>(10進)</div>
+        <div id="split" class="subvalue">0 0</div>
+      </div>
+      <div class="row">
+        <div class="label">16進数</div>
+        <div id="hex" class="value">0 0</div>
+      </div>
+      <input type="range" id="slider" min="0" max="255" value="0">
+    </div>
+  </div>
+  <footer>©キムりん＠松本深志高校</footer>
+
+  <script>
+    const slider    = document.getElementById('slider');
+    const decimalEl = document.getElementById('decimal');
+    const binaryEl  = document.getElementById('binary');
+    const splitEl   = document.getElementById('split');
+    const hexEl     = document.getElementById('hex');
+
+    function updateDisplay(value) {
+      const dec = parseInt(value, 10);
+      // 10進数
+      decimalEl.textContent = dec;
+      // 2進数(8ビット) - 上下4ビットにスペース
+      const bin8 = dec.toString(2).padStart(8, '0');
+      const upperBits = bin8.slice(0, 4);
+      const lowerBits = bin8.slice(4);
+      binaryEl.textContent = `${upperBits} ${lowerBits}`;
+      // 上位・下位4ビット(10進)
+      const upperDec = parseInt(upperBits, 2);
+      const lowerDec = parseInt(lowerBits, 2);
+      splitEl.textContent = `${upperDec} ${lowerDec}`;
+      // 16進数(2桁) - 桁間スペース
+      const hex2 = dec.toString(16).toUpperCase().padStart(2, '0');
+      hexEl.textContent = `${hex2[0]} ${hex2[1]}`;
+    }
+
+    slider.addEventListener('input', (e) => {
+      updateDisplay(e.target.value);
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateDisplay(slider.value);
+    });
+  </script>
+</body>
+</html>
